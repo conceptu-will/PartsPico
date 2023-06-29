@@ -1,26 +1,21 @@
 from romanNumeralsConverter import RomanNumeralsConverter
 
-romanNumeral = "IV"
-
 converter = RomanNumeralsConverter()
 
-#converter.romanToInteger("I")
-#converter.romanToInteger("II")
-#converter.romanToInteger("III")
-converter.romanToInteger("IV")
-converter.romanToInteger("V")
-converter.romanToInteger("VI")
-#converter.romanToInteger("VII")
-#converter.romanToInteger("VIII")
-#converter.romanToInteger("IX")
-#converter.romanToInteger("X")
-#converter.romanToInteger("XI")
-#converter.romanToInteger("XII")
-#converter.romanToInteger("XIII")
-#converter.romanToInteger("XIV")
-#converter.romanToInteger("XV")
-#converter.romanToInteger("XVI")
+romanNumerals = []
 
-#converter.romanToInteger("IL")
-#converter.romanToInteger("L")
-#converter.romanToInteger("LI")
+# Generate Roman numerals from a sequential count.
+index = 1
+while index <= 2000:
+    romanNumeral = converter.integerToRoman(index)
+    print("Integer '{0}' = Roman numeral '{1}'".format(index, romanNumeral))
+    romanNumerals.append(romanNumeral)
+    index = index + 1
+
+# Using those generated numbers, convert them back, and test for equality
+for index, romanNumeral in enumerate(romanNumerals):
+    expected = index + 1
+    actual = converter.romanToInteger(romanNumeral)
+    print("Expected: {0}, Roman numeral: {1}, Actual: {2}".format(expected, romanNumeral, actual))
+    if (expected != actual):
+        print('!!! Conversion error !!!')
