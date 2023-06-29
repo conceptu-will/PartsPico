@@ -19,11 +19,11 @@ class RomanNumeralsConverter:
 
 
     def __romanDigitToInteger(self, romanDigit):
-        # Return the value from the dictionary, or ZERO if it doesn't exist.
+        """Search the dictionary for integer that corresponds to the the Roman numeral"""
         return self.__romanDigits.get(romanDigit, 0)
 
-    def __find_numeral(self, find_value):
-        """Search the dictionary for the Roman numeral"""
+    def __findNumeral(self, find_value):
+        """Search the dictionary for Roman numeral that corresponds to the integer"""
         return [item[0] for item in self.__romanDigits.items() if item[1] == find_value][0]
 
     def romanToInteger(self, romanNumeral):
@@ -51,23 +51,19 @@ class RomanNumeralsConverter:
 
 
     def integerToRoman(self, integerNumeral):
-        value = ""
         """Convert integer to Roman numeral"""
 
         # First, sort the dictionary by value
-
         romanDigitValues = sorted(list(self.__romanDigits.values()))
 
-        # Prepare the string
-        roman_str = ""
+        romanNumeral = ""
         remainder = integerNumeral
 
         # Loop through the values in reverse
-        for i in range(len(romanDigitValues)-1, -1, -1):
-            count = int(remainder / romanDigitValues[i])
+        for index in range(len(romanDigitValues)-1, -1, -1):
+            count = int(remainder / romanDigitValues[index])
             if count > 0:
-                for j in range(0,count):
-                    roman_str += self.__find_numeral(romanDigitValues[i])
-                remainder -= count * romanDigitValues[i]
-        return roman_str
-        return value
+                for unusedIndex in range(0,count):
+                    romanNumeral += self.__findNumeral(romanDigitValues[index])
+                remainder -= count * romanDigitValues[index]
+        return romanNumeral
