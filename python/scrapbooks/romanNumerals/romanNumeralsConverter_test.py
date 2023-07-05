@@ -5,7 +5,7 @@ converter = RomanNumeralsConverter()
 romanNumerals = []
 
 # Generate Roman numerals from a sequential count.
-for index in range(1, 11):
+for index in range(1, 101):
     romanNumeral = converter.integerToRoman(index)
     print("Integer '{0}' = Roman numeral '{1}'".format(index, romanNumeral))
     romanNumerals.append(romanNumeral)
