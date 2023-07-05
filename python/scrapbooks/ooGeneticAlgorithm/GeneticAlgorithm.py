@@ -4,32 +4,37 @@ import numpy as np
 
 class Algorithm:
     def __init__(self, number_of_chromosomes, population_size, crossover_rate, mutation_rate, selection_pool_size):
-        self.population = Population(selection_pool_size);
+        self.__population = Population(selection_pool_size);
         for _ in range(population_size):
-            self.population.add(Individual(number_of_chromosomes, mutation_rate))
-        self.generation_number = 0
-        self.crossover_rate = crossover_rate
+            self.__population.add(Individual(number_of_chromosomes, mutation_rate))
+        
+        self.__generation_number = 0
+        
+        self.__crossover_rate = crossover_rate
 
     def get_population(self):
-        return self.population
+        return self.__population
     
     def set_population(self, population):
-        self.population = population
+        self.__population = population
 
     def get_generation_number(self):
-        return self.generation_number
+        return self.__generation_number
 
     def set_generation_number(self, generation_number):
-        self.generation_number = generation_number
+        self.__generation_number = generation_number
+
+    def get_crossover_rate(self):
+        return self.__crossover_rate
 
     def increment_generation_number(self):
         self.set_generation_number(self.get_generation_number() + 1)
 
     def get_fittest(self):
-        return self.population.get_fittest()
+        return self.get_population().get_fittest()
     
     def should_crossover(self):
-        return np.random.rand() < self.crossover_rate
+        return np.random.rand() < self.get_crossover_rate()
 
     def reproduction(self, parents):
         parent_a = parents[0]
@@ -48,7 +53,7 @@ class Algorithm:
         self.increment_generation_number()
         
         # Randomly select 'fitter' individuals from the population.
-        reproducing_parents = [self.get_population().selection() for _ in range(self.population.size())]
+        reproducing_parents = [self.get_population().selection() for _ in range(self.get_population().size())]
 
         children = Population(self.get_population().get_selection_pool_size())
 
@@ -72,26 +77,26 @@ class Algorithm:
 
 class Population:
     def __init__(self, selection_pool_size):
-        self.individuals = list()
-        self.selection_pool_size = selection_pool_size
+        self.__individuals = list()
+        self.__selection_pool_size = selection_pool_size
     
     def get_individuals(self):
-        return self.individuals
+        return self.__individuals
     
     def set_individuals(self, individuals):
-        self.individuals = individuals
+        self.__individuals = individuals
     
     def get_selection_pool_size(self):
-        return self.selection_pool_size
+        return self.__selection_pool_size
     
     def add(self, individual):
-        self.individuals.append(individual)
+        self.get_individuals().append(individual)
     
     def get_individual(self, index):
-        return self.individuals[index]
+        return self.get_individuals()[index]
     
     def size(self):
-        return len(self.individuals)
+        return len(self.get_individuals())
 
     def get_average_fitness(self):
         fitness_scores = [current_individual.get_fitness() for current_individual in self.get_individuals()]
@@ -108,7 +113,7 @@ class Population:
 
     def selection(self):
         # Choose 'k' number of random individuals, without duplication.
-        random_individuals = np.random.choice(self.individuals, self.get_selection_pool_size(), False)
+        random_individuals = np.random.choice(self.get_individuals(), self.get_selection_pool_size(), False)
         
         # Find the fittest of this subset.
         fittest_individual = None
@@ -126,39 +131,42 @@ class Population:
 
 class Individual:
     def __init__(self, number_of_chromosomes, mutation_rate):
-        self.chromosomes = np.random.randint(0, 2, number_of_chromosomes).tolist()
-        self.mutation_rate = mutation_rate
-        self.fitness = 0
+        self.__chromosomes = np.random.randint(0, 2, number_of_chromosomes).tolist()
+        self.__mutation_rate = mutation_rate
+        self.__fitness = 0
 
     def get_chromosomes(self):
-        return self.chromosomes
+        return self.__chromosomes
 
     def set_chromosomes(self, chromosomes):
-        self.chromosomes = chromosomes
+        self.__chromosomes = chromosomes
 
     def get_mutation_rate(self):
-        return self.mutation_rate
+        return self.__mutation_rate
 
     def get_fitness(self):
-        if (self.fitness == 0):
+        if (self.__fitness == 0):
             self.calculate_fitness()
-        return self.fitness
+        return self.__fitness
+    
+    def set_fitness(self, fitness):
+        self.__fitness = fitness
     
     def calculate_fitness(self):
-        self.fitness = sum(self.chromosomes)
+        self.set_fitness(sum(self.get_chromosomes()))
     
     def clone(self):
-        cloned_individual = Individual(len(self.chromosomes), self.get_mutation_rate())
+        cloned_individual = Individual(len(self.get_chromosomes()), self.get_mutation_rate())
         cloned_individual.set_chromosomes(self.get_chromosomes())
         return cloned_individual
     
     def should_mutate(self):
-        return np.random.rand() < self.mutation_rate
+        return np.random.rand() < self.get_mutation_rate()
 
     def mutate(self):
-        for index in range(len(self.chromosomes)):
+        for index in range(len(self.get_chromosomes())):
             if (self.should_mutate()):
-                self.chromosomes[index] = 1 - self.chromosomes[index]
+                self.get_chromosomes()[index] = 1 - self.get_chromosomes()[index]
 
     def reproduce_with(self, an_individual):
         child = Individual(len(self.get_chromosomes()), self.get_mutation_rate())
@@ -183,6 +191,6 @@ algorithm = Algorithm(
 )
 
 algorithm.run(
-    1000 # number_of_generations
+    100 # number_of_generations
 )
 
